@@ -29,7 +29,12 @@ public class LicenseInventory {
 
     @Column(nullable = false)
     private LocalDate expiryDate;
-
+    
+    @Column(nullable = false)
+    private boolean revoked = false;
+    public boolean isRevoked() { return revoked; }
+    public void setRevoked(boolean revoked) { this.revoked = revoked; }
+    
     @ManyToOne(optional = false)
     @JoinColumn(name = "department_id")
     private Department department;
