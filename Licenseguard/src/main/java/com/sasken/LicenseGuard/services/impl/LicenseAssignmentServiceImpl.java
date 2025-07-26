@@ -44,6 +44,14 @@ public class LicenseAssignmentServiceImpl implements LicenseAssignmentService {
         LicenseInventory license = licenseRepo.findById(dto.getLicenseInventoryId())
                 .orElseThrow(() -> new IllegalArgumentException("License not found"));
 
+        // License validity checks before assignment
+        if (license.getExpiryDate() != null && license.getExpiryDate().isBefore(java.time.LocalDate.now())) {
+            throw new IllegalStateException("License is expired.");
+        }
+        if (license.isRevoked()) {
+            throw new IllegalStateException("License is revoked.");
+        }
+
         User toUser = userRepo.findById(dto.getAssignedToUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Assigned-to User not found"));
 
