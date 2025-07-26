@@ -34,7 +34,8 @@ public class ReportController {
     @GetMapping(value = "/licenses/downloadByDepartment/{deptId}", produces = "text/csv")
     public void downloadCSVByDepartment(@PathVariable Long deptId, HttpServletResponse response) throws IOException {
         List<LicenseReportDTO> report = reportService.generateLicenseReportByDepartment(deptId);
-        Department department = depRepo.findByid(deptId);
+        Department department = depRepo.findById(deptId)
+        	    .orElseThrow(() -> new IllegalArgumentException("Department not found"));
         String deptName = department.getName().replaceAll("\\s+", "_");
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=license_report_department_" +deptName+ ".csv");

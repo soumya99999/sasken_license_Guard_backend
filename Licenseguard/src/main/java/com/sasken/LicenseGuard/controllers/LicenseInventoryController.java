@@ -33,7 +33,7 @@ public class LicenseInventoryController {
     }
 
     @GetMapping("/department/{deptId}")
-    public ResponseEntity<List<LicenseInventoryDTO>> getByDept(@PathVariable Long deptId) {
+    public ResponseEntity<List<LicenseInventoryDTO>> getByDepartment(@PathVariable Long deptId) {
         return ResponseEntity.ok(licenseService.getByDepartment(deptId));
     }
 }

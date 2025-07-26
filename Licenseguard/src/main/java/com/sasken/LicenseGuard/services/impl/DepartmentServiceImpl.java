@@ -14,46 +14,55 @@ import java.util.stream.Collectors;
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
 
-    private final DepartmentRepository departmentRepository;
-    private final UserRepository userRepository;
+    private final DepartmentRepository deptRepo;
+    private final UserRepository userRepo;
 
-    public DepartmentServiceImpl(DepartmentRepository departmentRepository, UserRepository userRepository) {
-        this.departmentRepository = departmentRepository;
-        this.userRepository = userRepository;
+    public DepartmentServiceImpl(DepartmentRepository deptRepo, UserRepository userRepo) {
+        this.deptRepo = deptRepo;
+        this.userRepo = userRepo;
     }
 
     @Override
     public DepartmentDTO createDepartment(DepartmentDTO dto) {
-        User headUser = userRepository.findById(dto.getHeadUserId())
-                .orElseThrow(() -> new IllegalArgumentException("Head user not found"));
+        User head = null;
+        if (dto.getHeadUserId() != null) {
+            head = userRepo.findById(dto.getHeadUserId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid Head User ID"));
+        }
 
-        Department dept = new Department();
-        dept.setName(dto.getName());
-        dept.setHeadUser(headUser);
+        Department department = new Department();
+        department.setName(dto.getName());
+        department.setHeadUser(head);
 
-        return mapToDTO(departmentRepository.save(dept));
+        Department saved = deptRepo.save(department);
+        return mapToDTO(saved);
     }
 
     @Override
     public DepartmentDTO getDepartmentById(Long id) {
-        Department dept = departmentRepository.findById(id)
+        return deptRepo.findById(id)
+                .map(this::mapToDTO)
                 .orElseThrow(() -> new IllegalArgumentException("Department not found"));
-        return mapToDTO(dept);
     }
 
     @Override
     public List<DepartmentDTO> getAllDepartments() {
-        return departmentRepository.findAll()
+        return deptRepo.findAll()
                 .stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
-    private DepartmentDTO mapToDTO(Department dept) {
+    @Override
+    public void deleteDepartment(Long id) {
+        deptRepo.deleteById(id);
+    }
+
+    private DepartmentDTO mapToDTO(Department department) {
         DepartmentDTO dto = new DepartmentDTO();
-        dto.setId(dept.getId());
-        dto.setName(dept.getName());
-        dto.setHeadUserId(dept.getHeadUser() != null ? dept.getHeadUser().getId() : null);
+        dto.setId(department.getId());
+        dto.setName(department.getName());
+        dto.setHeadUserId(department.getHeadUser().getId());
         return dto;
     }
 }

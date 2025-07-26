@@ -20,9 +20,10 @@ public class LicenseInventoryServiceImpl implements LicenseInventoryService {
     private final DepartmentRepository departmentRepo;
     private final ProcurementRecordRepository procurementRepo;
 
-    public LicenseInventoryServiceImpl(LicenseInventoryRepository licenseRepo,
-                                       DepartmentRepository departmentRepo,
-                                       ProcurementRecordRepository procurementRepo) {
+    public LicenseInventoryServiceImpl(
+            LicenseInventoryRepository licenseRepo,
+            DepartmentRepository departmentRepo,
+            ProcurementRecordRepository procurementRepo) {
         this.licenseRepo = licenseRepo;
         this.departmentRepo = departmentRepo;
         this.procurementRepo = procurementRepo;
@@ -31,10 +32,10 @@ public class LicenseInventoryServiceImpl implements LicenseInventoryService {
     @Override
     public LicenseInventoryDTO createLicense(LicenseInventoryDTO dto) {
         Department department = departmentRepo.findById(dto.getDepartmentId())
-                .orElseThrow(() -> new IllegalArgumentException("Department not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid department ID: " + dto.getDepartmentId()));
 
-        ProcurementRecord procurement = procurementRepo.findById(dto.getProcurementId())
-                .orElseThrow(() -> new IllegalArgumentException("Procurement record not found"));
+        ProcurementRecord procurement = procurementRepo.findById(dto.getProcurementRecordId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid procurement record ID: " + dto.getProcurementRecordId()));
 
         LicenseInventory license = new LicenseInventory();
         license.setSoftwareName(dto.getSoftwareName());
@@ -42,45 +43,47 @@ public class LicenseInventoryServiceImpl implements LicenseInventoryService {
         license.setPurchaseDate(dto.getPurchaseDate());
         license.setExpiryDate(dto.getExpiryDate());
         license.setTotalQuantity(dto.getTotalQuantity());
+        license.setAvailableQuantity(dto.getTotalQuantity()); // Initially all are available
+
         license.setDepartment(department);
         license.setProcurementRecord(procurement);
 
-        return mapToDTO(licenseRepo.save(license));
-    }
-
-    @Override
-    public List<LicenseInventoryDTO> getAllLicenses() {
-        return licenseRepo.findAll()
-                .stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+        LicenseInventory saved = licenseRepo.save(license);
+        return mapToDTO(saved);
     }
 
     @Override
     public LicenseInventoryDTO getLicenseById(Long id) {
         LicenseInventory license = licenseRepo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("License not found"));
+                .orElseThrow(() -> new IllegalArgumentException("License not found with id: " + id));
         return mapToDTO(license);
     }
 
     @Override
-    public List<LicenseInventoryDTO> getByDepartment(Long departmentId) {
-        return licenseRepo.findByDepartmentId(departmentId)
-                .stream()
+    public List<LicenseInventoryDTO> getAllLicenses() {
+        return licenseRepo.findAll().stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
-    private LicenseInventoryDTO mapToDTO(LicenseInventory license) {
+    @Override
+    public List<LicenseInventoryDTO> getByDepartment(Long departmentId) {
+        return licenseRepo.findByDepartmentId(departmentId).stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private LicenseInventoryDTO mapToDTO(LicenseInventory entity) {
         LicenseInventoryDTO dto = new LicenseInventoryDTO();
-        dto.setLicenseId(license.getLicenseId());
-        dto.setSoftwareName(license.getSoftwareName());
-        dto.setLicenseKey(license.getLicenseKey());
-        dto.setPurchaseDate(license.getPurchaseDate());
-        dto.setExpiryDate(license.getExpiryDate());
-        dto.setTotalQuantity(license.getTotalQuantity());
-        dto.setDepartmentId(license.getDepartment().getId());
-        dto.setProcurementId(license.getProcurementRecord().getPoHeaderId());
+        dto.setId(entity.getId());
+        dto.setSoftwareName(entity.getSoftwareName());
+        dto.setLicenseKey(entity.getLicenseKey());
+        dto.setTotalQuantity(entity.getTotalQuantity());
+        dto.setAvailableQuantity(entity.getAvailableQuantity());
+        dto.setPurchaseDate(entity.getPurchaseDate());
+        dto.setExpiryDate(entity.getExpiryDate());
+        dto.setDepartmentId(entity.getDepartment().getId());
+        dto.setProcurementRecordId(entity.getProcurementRecord().getPoHeaderId());
         return dto;
     }
 }

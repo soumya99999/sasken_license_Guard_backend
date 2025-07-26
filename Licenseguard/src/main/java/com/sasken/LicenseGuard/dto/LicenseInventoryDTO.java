@@ -3,22 +3,24 @@ package com.sasken.LicenseGuard.dto;
 import java.time.LocalDate;
 
 public class LicenseInventoryDTO {
-    private Long licenseId;
+	private Long id;
     private String softwareName;
     private String licenseKey;
+    private int totalQuantity;
+    private int availableQuantity;
     private LocalDate purchaseDate;
     private LocalDate expiryDate;
-    private Integer totalQuantity;
     private Long departmentId;
-    private Long procurementId;
+    private Long procurementRecordId;
 
-    // Getters and Setters
-    public Long getLicenseId() {
-        return licenseId;
+    // ======= Getters and Setters =======
+
+    public Long getId() {
+        return id;
     }
 
-    public void setLicenseId(Long licenseId) {
-        this.licenseId = licenseId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getSoftwareName() {
@@ -37,6 +39,22 @@ public class LicenseInventoryDTO {
         this.licenseKey = licenseKey;
     }
 
+    public int getTotalQuantity() {
+        return totalQuantity;
+    }
+
+    public void setTotalQuantity(int totalQuantity) {
+        this.totalQuantity = totalQuantity;
+    }
+
+    public int getAvailableQuantity() {
+        return availableQuantity;
+    }
+
+    public void setAvailableQuantity(int availableQuantity) {
+        this.availableQuantity = availableQuantity;
+    }
+
     public LocalDate getPurchaseDate() {
         return purchaseDate;
     }
@@ -53,14 +71,6 @@ public class LicenseInventoryDTO {
         this.expiryDate = expiryDate;
     }
 
-    public Integer getTotalQuantity() {
-        return totalQuantity;
-    }
-
-    public void setTotalQuantity(Integer totalQuantity) {
-        this.totalQuantity = totalQuantity;
-    }
-
     public Long getDepartmentId() {
         return departmentId;
     }
@@ -69,11 +79,11 @@ public class LicenseInventoryDTO {
         this.departmentId = departmentId;
     }
 
-    public Long getProcurementId() {
-        return procurementId;
+    public Long getProcurementRecordId() {
+        return procurementRecordId;
     }
 
-    public void setProcurementId(Long procurementId) {
-        this.procurementId = procurementId;
+    public void setProcurementRecordId(Long procurementRecordId) {
+        this.procurementRecordId = procurementRecordId;
     }
 }

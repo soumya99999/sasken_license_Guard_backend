@@ -6,7 +6,7 @@ public class DepartmentDTO {
     private String name;
     private Long headUserId;
 
-    // --- Getters and Setters ---
+    // ===== Custom Getters and Setters =====
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

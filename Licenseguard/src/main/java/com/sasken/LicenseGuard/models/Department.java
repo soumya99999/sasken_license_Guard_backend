@@ -1,9 +1,10 @@
 package com.sasken.LicenseGuard.models;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "department")
+@Table(name = "departments")
 public class Department {
 
     @Id
@@ -17,7 +18,10 @@ public class Department {
     @JoinColumn(name = "head_user_id", nullable = false)
     private User headUser;
 
-    // --- Getters and Setters ---
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
+    private List<User> members;
+
+    // ===== Custom Getters and Setters =====
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -26,4 +30,7 @@ public class Department {
 
     public User getHeadUser() { return headUser; }
     public void setHeadUser(User headUser) { this.headUser = headUser; }
+
+    public List<User> getMembers() { return members; }
+    public void setMembers(List<User> members) { this.members = members; }
 }

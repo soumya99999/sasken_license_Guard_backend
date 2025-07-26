@@ -1,6 +1,9 @@
+// User.java
 package com.sasken.LicenseGuard.models;
 
+import com.sasken.LicenseGuard.enums.Role;
 import jakarta.persistence.*;
+import com.sasken.LicenseGuard.converters.BooleanToStringConverter;
 
 @Entity
 @Table(name = "users")
@@ -13,23 +16,26 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String role; // USER, DEPT_HEAD
+    private Role role;
+
+    @Convert(converter = BooleanToStringConverter.class)
+    @Column(nullable = false)
+    private Boolean isApproved;
 
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
 
-    @Column(nullable = false)
-    private Boolean isApproved = false;
+    // Custom Getters & Setters
 
-    // --- Getters and Setters ---
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -42,12 +48,12 @@ public class User {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
-
-    public Department getDepartment() { return department; }
-    public void setDepartment(Department department) { this.department = department; }
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
 
     public Boolean getIsApproved() { return isApproved; }
     public void setIsApproved(Boolean isApproved) { this.isApproved = isApproved; }
+
+    public Department getDepartment() { return department; }
+    public void setDepartment(Department department) { this.department = department; }
 }

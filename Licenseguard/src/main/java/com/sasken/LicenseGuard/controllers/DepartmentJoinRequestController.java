@@ -19,7 +19,7 @@ public class DepartmentJoinRequestController {
 
     @PostMapping
     public ResponseEntity<DepartmentJoinRequestDTO> create(@RequestBody DepartmentJoinRequestDTO dto) {
-        return ResponseEntity.ok(service.createJoinRequest(dto));
+        return ResponseEntity.ok(service.createRequest(dto));
     }
 
     @PutMapping("/{id}/approve")
@@ -34,11 +34,11 @@ public class DepartmentJoinRequestController {
 
     @GetMapping
     public ResponseEntity<List<DepartmentJoinRequestDTO>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+        return ResponseEntity.ok(service.getAllRequests());
     }
 
     @GetMapping("/department/{deptId}")
     public ResponseEntity<List<DepartmentJoinRequestDTO>> getByDepartment(@PathVariable Long deptId) {
-        return ResponseEntity.ok(service.getRequestsByDepartment(deptId));
+        return ResponseEntity.ok(service.getByDepartmentId(deptId));
     }
 }

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface LicenseInventoryService {
     LicenseInventoryDTO createLicense(LicenseInventoryDTO dto);
-    List<LicenseInventoryDTO> getAllLicenses();
     LicenseInventoryDTO getLicenseById(Long id);
+    List<LicenseInventoryDTO> getAllLicenses();
     List<LicenseInventoryDTO> getByDepartment(Long departmentId);
 }

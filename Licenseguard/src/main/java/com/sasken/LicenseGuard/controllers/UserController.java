@@ -21,6 +21,13 @@ public class UserController {
     public ResponseEntity<UserDTO> create(@RequestBody UserDTO dto) {
         return ResponseEntity.ok(userService.createUser(dto));
     }
+    
+    @PostMapping("/register-admin")
+    public ResponseEntity<UserDTO> registerAdmin(@RequestBody UserDTO dto) {
+        dto.setRole("ADMIN"); // force role to ADMIN
+        dto.setIsApproved(true); // always approved
+        return ResponseEntity.ok(userService.createUser(dto));
+    }
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -30,11 +37,6 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
-    }
-
-    @GetMapping("/department/{deptId}")
-    public ResponseEntity<List<UserDTO>> getByDept(@PathVariable Long deptId) {
-        return ResponseEntity.ok(userService.getUsersByDepartment(deptId));
     }
 
     @PutMapping("/{id}/approve")

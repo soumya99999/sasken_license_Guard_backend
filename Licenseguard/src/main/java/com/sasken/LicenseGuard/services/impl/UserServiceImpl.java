@@ -1,6 +1,7 @@
 package com.sasken.LicenseGuard.services.impl;
 
 import com.sasken.LicenseGuard.dto.UserDTO;
+import com.sasken.LicenseGuard.enums.Role;
 import com.sasken.LicenseGuard.models.Department;
 import com.sasken.LicenseGuard.models.User;
 import com.sasken.LicenseGuard.repository.DepartmentRepository;
@@ -15,11 +16,11 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepo;
-    private final DepartmentRepository departmentRepo;
+    private final DepartmentRepository deptRepo;
 
-    public UserServiceImpl(UserRepository userRepo, DepartmentRepository departmentRepo) {
+    public UserServiceImpl(UserRepository userRepo, DepartmentRepository deptRepo) {
         this.userRepo = userRepo;
-        this.departmentRepo = departmentRepo;
+        this.deptRepo = deptRepo;
     }
 
     @Override
@@ -28,12 +29,22 @@ public class UserServiceImpl implements UserService {
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
-        user.setRole(dto.getRole());
-        user.setIsApproved(false); // default state
 
+        // Role conversion
+        Role role = Role.valueOf(dto.getRole());
+        user.setRole(role);
+
+        // Approval Logic
+        if (role == Role.DEPT_HEAD || role == Role.ADMIN) {
+            user.setIsApproved(true);
+        } else {
+            user.setIsApproved(dto.getIsApproved() != null ? dto.getIsApproved() : false);
+        }
+
+        // Department (optional)
         if (dto.getDepartmentId() != null) {
-            Department dept = departmentRepo.findById(dto.getDepartmentId())
-                    .orElseThrow(() -> new IllegalArgumentException("Department not found"));
+            Department dept = deptRepo.findById(dto.getDepartmentId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid department ID"));
             user.setDepartment(dept);
         }
 
@@ -41,36 +52,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO getUserById(Long id) {
-        return userRepo.findById(id).map(this::mapToDTO)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public List<UserDTO> getAllUsers() {
+        return userRepo.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     @Override
-    public List<UserDTO> getAllUsers() {
-        return userRepo.findAll().stream()
+    public UserDTO getUserById(Long id) {
+        return userRepo.findById(id)
                 .map(this::mapToDTO)
-                .collect(Collectors.toList());
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
     @Override
     public List<UserDTO> getUsersByDepartment(Long deptId) {
-        return userRepo.findByDepartmentId(deptId).stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+        return userRepo.findByDepartmentId(deptId)
+                .stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     @Override
-    public UserDTO approveUser(Long userId) {
-        User user = userRepo.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public UserDTO approveUser(Long id) {
+        User user = userRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
         user.setIsApproved(true);
         return mapToDTO(userRepo.save(user));
     }
 
     @Override
-    public void deleteUser(Long userId) {
-        userRepo.deleteById(userId);
+    public void deleteUser(Long id) {
+        userRepo.deleteById(id);
     }
 
     private UserDTO mapToDTO(User user) {
@@ -78,8 +86,8 @@ public class UserServiceImpl implements UserService {
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
-        dto.setPassword(null); // mask it
-        dto.setRole(user.getRole());
+        dto.setRole(user.getRole().name());
+        dto.setPassword(null); // security best practice
         dto.setIsApproved(user.getIsApproved());
         dto.setDepartmentId(user.getDepartment() != null ? user.getDepartment().getId() : null);
         return dto;

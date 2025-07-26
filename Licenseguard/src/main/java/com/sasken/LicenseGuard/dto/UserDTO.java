@@ -6,10 +6,10 @@ public class UserDTO {
     private String email;
     private String password;
     private String role;
-    private Long departmentId;
     private Boolean isApproved;
+    private Long departmentId;
 
-    // --- Getters and Setters ---
+    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -25,9 +25,9 @@ public class UserDTO {
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
 
-    public Long getDepartmentId() { return departmentId; }
-    public void setDepartmentId(Long departmentId) { this.departmentId = departmentId; }
-
     public Boolean getIsApproved() { return isApproved; }
     public void setIsApproved(Boolean isApproved) { this.isApproved = isApproved; }
+
+    public Long getDepartmentId() { return departmentId; }
+    public void setDepartmentId(Long departmentId) { this.departmentId = departmentId; }
 }

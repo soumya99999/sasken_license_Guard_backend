@@ -17,74 +17,88 @@ import java.util.stream.Collectors;
 @Service
 public class DepartmentJoinRequestServiceImpl implements DepartmentJoinRequestService {
 
-    private final DepartmentJoinRequestRepository joinRepo;
+    private final DepartmentJoinRequestRepository requestRepo;
     private final UserRepository userRepo;
-    private final DepartmentRepository deptRepo;
+    private final DepartmentRepository departmentRepo;
 
-    public DepartmentJoinRequestServiceImpl(DepartmentJoinRequestRepository joinRepo,
-                                            UserRepository userRepo,
-                                            DepartmentRepository deptRepo) {
-        this.joinRepo = joinRepo;
+    public DepartmentJoinRequestServiceImpl(
+            DepartmentJoinRequestRepository requestRepo,
+            UserRepository userRepo,
+            DepartmentRepository departmentRepo
+    ) {
+        this.requestRepo = requestRepo;
         this.userRepo = userRepo;
-        this.deptRepo = deptRepo;
+        this.departmentRepo = departmentRepo;
     }
 
     @Override
-    public DepartmentJoinRequestDTO createJoinRequest(DepartmentJoinRequestDTO dto) {
+    public DepartmentJoinRequestDTO createRequest(DepartmentJoinRequestDTO dto) {
         User user = userRepo.findById(dto.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        Department department = deptRepo.findById(dto.getDepartmentId())
+
+        Department department = departmentRepo.findById(dto.getDepartmentId())
                 .orElseThrow(() -> new IllegalArgumentException("Department not found"));
 
-        DepartmentJoinRequest req = new DepartmentJoinRequest();
-        req.setUser(user);
-        req.setDepartment(department);
-        req.setRequestedAt(LocalDateTime.now());
-        req.setStatus("PENDING");
+        DepartmentJoinRequest request = new DepartmentJoinRequest();
+        request.setUser(user);
+        request.setDepartment(department);
+        request.setStatus("PENDING");
+        request.setRequestedAt(LocalDateTime.now());
 
-        return mapToDTO(joinRepo.save(req));
+        return mapToDTO(requestRepo.save(request));
     }
 
     @Override
     public DepartmentJoinRequestDTO approveRequest(Long requestId) {
-        DepartmentJoinRequest req = joinRepo.findById(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
+        DepartmentJoinRequest request = requestRepo.findById(requestId)
+                .orElseThrow(() -> new IllegalArgumentException("Join request not found"));
 
-        req.setStatus("APPROVED");
+        // Update join request status
+        request.setStatus("APPROVED");
 
-        // set department to user
-        User user = req.getUser();
-        user.setDepartment(req.getDepartment());
-        userRepo.save(user);
+        // Update user's department and approval status
+        User user = request.getUser();
+        Department department = request.getDepartment();
 
-        return mapToDTO(joinRepo.save(req));
+        if (user != null && department != null) {
+            user.setIsApproved(true);
+            user.setDepartment(department);
+            userRepo.save(user);
+        }
+
+        return mapToDTO(requestRepo.save(request));
     }
 
     @Override
     public DepartmentJoinRequestDTO rejectRequest(Long requestId) {
-        DepartmentJoinRequest req = joinRepo.findById(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
-        req.setStatus("REJECTED");
-        return mapToDTO(joinRepo.save(req));
+        DepartmentJoinRequest request = requestRepo.findById(requestId)
+                .orElseThrow(() -> new IllegalArgumentException("Join request not found"));
+
+        request.setStatus("REJECTED");
+        return mapToDTO(requestRepo.save(request));
     }
 
     @Override
-    public List<DepartmentJoinRequestDTO> getAll() {
-        return joinRepo.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
+    public List<DepartmentJoinRequestDTO> getAllRequests() {
+        return requestRepo.findAll().stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<DepartmentJoinRequestDTO> getRequestsByDepartment(Long deptId) {
-        return joinRepo.findByDepartmentId(deptId).stream().map(this::mapToDTO).collect(Collectors.toList());
+    public List<DepartmentJoinRequestDTO> getByDepartmentId(Long departmentId) {
+        return requestRepo.findByDepartmentId(departmentId).stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
-    private DepartmentJoinRequestDTO mapToDTO(DepartmentJoinRequest entity) {
+    private DepartmentJoinRequestDTO mapToDTO(DepartmentJoinRequest request) {
         DepartmentJoinRequestDTO dto = new DepartmentJoinRequestDTO();
-        dto.setId(entity.getId());
-        dto.setUserId(entity.getUser().getId());
-        dto.setDepartmentId(entity.getDepartment().getId());
-        dto.setRequestedAt(entity.getRequestedAt());
-        dto.setStatus(entity.getStatus());
+        dto.setId(request.getId());
+        dto.setUserId(request.getUser() != null ? request.getUser().getId() : null);
+        dto.setDepartmentId(request.getDepartment() != null ? request.getDepartment().getId() : null);
+        dto.setStatus(request.getStatus());
+        dto.setRequestedAt(request.getRequestedAt());
         return dto;
     }
 }

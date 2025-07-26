@@ -7,10 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sasken.LicenseGuard.repository.DepartmentJoinRequestRepository;
 import com.sasken.LicenseGuard.repository.LicenseInventoryRepository;
-import com.sasken.LicenseGuard.repository.ProcurementRecordRepository;
-import com.sasken.LicenseGuard.models.DepartmentJoinRequest;
 import com.sasken.LicenseGuard.models.LicenseInventory;
 import com.sasken.LicenseGuard.models.ProcurementRecord;
 import com.sasken.LicenseGuard.dto.LicenseReportDTO;
@@ -20,14 +17,6 @@ public class ReportService {
 
     @Autowired
     private LicenseInventoryRepository licenseRepo;
-
-    @Autowired
-    private ProcurementRecordRepository procurementRepo;
-
-    @Autowired
-    private DepartmentJoinRequestRepository joinRequestRepo;
-   
-
 
     public List<LicenseReportDTO> generateLicenseReport() {
         List<LicenseInventory> licenses = licenseRepo.findAll();
