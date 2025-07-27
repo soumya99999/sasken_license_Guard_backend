@@ -30,7 +30,7 @@ public class TrackingServiceImpl implements TrackingService {
     @Scheduled(cron = "0 0 9 * * ?")
     public void checkExpiringLicenses() {
         List<DepartmentDTO> allDepartments = departmentService.getAllDepartments();
-        if (!allDepartments.isEmpty()){
+        if (!allDepartments.isEmpty()) {
             for (DepartmentDTO department : allDepartments) {
                 sendExpirationEmailToDeptHead(department.getId());
             }
@@ -50,10 +50,14 @@ public class TrackingServiceImpl implements TrackingService {
             return "th";
         }
         switch (day % 10) {
-            case 1:  return "st";
-            case 2:  return "nd";
-            case 3:  return "rd";
-            default: return "th";
+            case 1:
+                return "st";
+            case 2:
+                return "nd";
+            case 3:
+                return "rd";
+            default:
+                return "th";
         }
     }
 

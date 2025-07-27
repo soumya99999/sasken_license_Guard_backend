@@ -10,9 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-// other imports...
-
-
 @Service
 public class EmailServiceImpl implements EmailService {
 
@@ -22,8 +19,10 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendLicenseExpiryNotification(String deptHeadName, String deptHeadEmail, String departmentName, List<String[]> expiredLicenses) {
         String subject = "Expired Licenses Notification for " + departmentName + " department";
-
-        // Build HTML table
+        if (expiredLicenses == null || expiredLicenses.isEmpty()) {
+            System.out.println("No expired licenses to notify.");
+            return;
+        }
         StringBuilder html = new StringBuilder();
         html.append("<p>Hi ").append(deptHeadName).append(",</p>");
         html.append("<p>The following licenses are expiring in 7 days:</p>");
@@ -46,11 +45,10 @@ public class EmailServiceImpl implements EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
             helper.setTo(deptHeadEmail);
             helper.setSubject(subject);
-            helper.setText(html.toString(), true); // true = isHtml
+            helper.setText(html.toString(), true);
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            // Handle exception appropriately
-            e.printStackTrace();
+            System.out.println("Error sending email: " + e.getMessage());
         }
     }
 }
