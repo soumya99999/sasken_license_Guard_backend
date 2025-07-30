@@ -2,6 +2,7 @@ package com.sasken.LicenseGuard.models;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,7 +16,7 @@ public class ProcurementRecord {
     private String orderNumber;
 
     @Column(nullable = false)
-    private LocalDateTime creationDate;
+    private LocalDate creationDate;
 
     @Column(nullable = false)
     private String statusCode;
@@ -46,10 +47,15 @@ public class ProcurementRecord {
     public String getOrderNumber() { return orderNumber; }
     public void setOrderNumber(String orderNumber) { this.orderNumber = orderNumber; }
 
-    public LocalDateTime getCreationDate() { return creationDate; }
-    public void setCreationDate(LocalDateTime creationDate) { this.creationDate = creationDate; }
+    
 
-    public String getStatusCode() { return statusCode; }
+    public LocalDate getCreationDate() {
+		return creationDate;
+	}
+	public void setCreationDate(LocalDate creationDate) {
+		this.creationDate = creationDate;
+	}
+	public String getStatusCode() { return statusCode; }
     public void setStatusCode(String statusCode) { this.statusCode = statusCode; }
 
     public String getSupplier() { return supplier; }

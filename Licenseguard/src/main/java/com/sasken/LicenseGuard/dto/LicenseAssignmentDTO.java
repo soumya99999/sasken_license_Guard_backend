@@ -1,12 +1,13 @@
 package com.sasken.LicenseGuard.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class LicenseAssignmentDTO {
     private Long id;
     private int assignedQuantity;
-    private LocalDateTime assignedAt;
-    private LocalDateTime expiresAt;
+    private LocalDate assignedAt;
+    private LocalDate expiresAt;
     private Long licenseInventoryId;
     private Long assignedToUserId;
     private Long assignedByUserId;
@@ -17,14 +18,22 @@ public class LicenseAssignmentDTO {
 
     public int getAssignedQuantity() { return assignedQuantity; }
     public void setAssignedQuantity(int assignedQuantity) { this.assignedQuantity = assignedQuantity; }
+    
+    
 
-    public LocalDateTime getAssignedAt() { return assignedAt; }
-    public void setAssignedAt(LocalDateTime assignedAt) { this.assignedAt = assignedAt; }
-
-    public LocalDateTime getExpiresAt() { return expiresAt; }
-    public void setExpiresAt(LocalDateTime expiresAt) { this.expiresAt = expiresAt; }
-
-    public Long getLicenseInventoryId() { return licenseInventoryId; }
+    public LocalDate getAssignedAt() {
+		return assignedAt;
+	}
+	public void setAssignedAt(LocalDate assignedAt) {
+		this.assignedAt = assignedAt;
+	}
+	public LocalDate getExpiresAt() {
+		return expiresAt;
+	}
+	public void setExpiresAt(LocalDate expiresAt) {
+		this.expiresAt = expiresAt;
+	}
+	public Long getLicenseInventoryId() { return licenseInventoryId; }
     public void setLicenseInventoryId(Long licenseInventoryId) { this.licenseInventoryId = licenseInventoryId; }
 
     public Long getAssignedToUserId() { return assignedToUserId; }

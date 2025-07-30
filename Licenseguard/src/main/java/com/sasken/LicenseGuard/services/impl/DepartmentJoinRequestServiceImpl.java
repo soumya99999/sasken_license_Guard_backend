@@ -10,6 +10,7 @@ import com.sasken.LicenseGuard.repository.UserRepository;
 import com.sasken.LicenseGuard.services.DepartmentJoinRequestService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,7 +44,7 @@ public class DepartmentJoinRequestServiceImpl implements DepartmentJoinRequestSe
         request.setUser(user);
         request.setDepartment(department);
         request.setStatus("PENDING");
-        request.setRequestedAt(LocalDateTime.now());
+        request.setRequestedAt(LocalDate.now());
 
         return mapToDTO(requestRepo.save(request));
     }
@@ -99,6 +100,13 @@ public class DepartmentJoinRequestServiceImpl implements DepartmentJoinRequestSe
         dto.setDepartmentId(request.getDepartment() != null ? request.getDepartment().getId() : null);
         dto.setStatus(request.getStatus());
         dto.setRequestedAt(request.getRequestedAt());
+
+        // 👇 Only set email if user exists and is a normal USER
+        if (request.getUser() != null && request.getUser().getRole().name().equals("USER")) {
+            dto.setEmail(request.getUser().getEmail());
+        }
+
         return dto;
     }
+
 }

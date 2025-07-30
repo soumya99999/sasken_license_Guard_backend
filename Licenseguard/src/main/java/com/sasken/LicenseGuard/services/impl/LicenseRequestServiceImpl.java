@@ -8,6 +8,7 @@ import com.sasken.LicenseGuard.repository.UserRepository;
 import com.sasken.LicenseGuard.services.LicenseRequestService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ public class LicenseRequestServiceImpl implements LicenseRequestService {
         request.setSoftwareName(dto.getSoftwareName());
         request.setSystemId(dto.getSystemId());
         request.setRequestedBy(user);
-        request.setRequestedAt(LocalDateTime.now());
+        request.setRequestedAt(LocalDate.now());
         request.setStatus("PENDING");
 
         return mapToDTO(requestRepo.save(request));

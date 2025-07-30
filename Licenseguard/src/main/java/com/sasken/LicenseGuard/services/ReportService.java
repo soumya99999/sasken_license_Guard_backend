@@ -1,5 +1,6 @@
 package com.sasken.LicenseGuard.services;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ public class ReportService {
             ProcurementRecord record = license.getProcurementRecord();
 
             String procuredBy = record.getSupplier(); // Or change to `getUser().getName()` if assignee is a User
-            LocalDateTime assignDate = record.getCreationDate(); // if exists
+            LocalDate assignDate = record.getCreationDate(); // if exists
 
             return new LicenseReportDTO(
                     license.getSoftwareName(),
@@ -48,7 +49,7 @@ public class ReportService {
             ProcurementRecord record = license.getProcurementRecord();
 
             String procuredBy = record.getSupplier(); // or getUser().getName()
-            LocalDateTime assignDate = record.getCreationDate(); // or assignment date
+            LocalDate assignDate = record.getCreationDate(); // or assignment date
 
             return new LicenseReportDTO(
                     license.getSoftwareName(),

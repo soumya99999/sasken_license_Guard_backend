@@ -24,18 +24,43 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public DepartmentDTO createDepartment(DepartmentDTO dto) {
-        User head = null;
-        if (dto.getHeadUserId() != null) {
-            head = userRepo.findById(dto.getHeadUserId())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid Head User ID"));
-        }
-
         Department department = new Department();
         department.setName(dto.getName());
-        department.setHeadUser(head);
+
+        // Optional head assignment
+        if (dto.getHeadUserId() != null) {
+            User head = userRepo.findById(dto.getHeadUserId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid Head User ID"));
+            department.setHeadUser(head);
+        }
 
         Department saved = deptRepo.save(department);
         return mapToDTO(saved);
+    }
+
+    @Override
+    public DepartmentDTO updateDepartment(Long id, DepartmentDTO dto) {
+        Department department = deptRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Department not found"));
+
+        // Update name
+        if (dto.getName() != null) {
+            department.setName(dto.getName());
+        }
+
+        // Update head user
+        if (dto.getHeadUserId() != null) {
+            User head = userRepo.findById(dto.getHeadUserId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid Head User ID"));
+            department.setHeadUser(head);
+
+            // Also associate department with the user
+            head.setDepartment(department);
+            userRepo.save(head);
+        }
+
+        Department updated = deptRepo.save(department);
+        return mapToDTO(updated);
     }
 
     @Override
@@ -47,8 +72,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public List<DepartmentDTO> getAllDepartments() {
-        return deptRepo.findAll()
-                .stream()
+        return deptRepo.findAll().stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
@@ -62,7 +86,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         DepartmentDTO dto = new DepartmentDTO();
         dto.setId(department.getId());
         dto.setName(department.getName());
-        dto.setHeadUserId(department.getHeadUser().getId());
+        dto.setHeadUserId(department.getHeadUser() != null ? department.getHeadUser().getId() : null);
         return dto;
     }
 }

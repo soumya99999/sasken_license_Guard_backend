@@ -8,6 +8,7 @@ public class UserDTO {
     private String role;
     private Boolean isApproved;
     private Long departmentId;
+    private String departmentName;
 
     // Getters & Setters
     public Long getId() { return id; }
@@ -30,4 +31,10 @@ public class UserDTO {
 
     public Long getDepartmentId() { return departmentId; }
     public void setDepartmentId(Long departmentId) { this.departmentId = departmentId; }
+	public String getDepartmentName() {
+		return departmentName;
+	}
+	public void setDepartmentName(String departmentName) {
+		this.departmentName = departmentName;
+	}
 }

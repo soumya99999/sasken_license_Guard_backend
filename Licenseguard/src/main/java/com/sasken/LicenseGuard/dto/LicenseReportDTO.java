@@ -11,13 +11,13 @@ public class LicenseReportDTO {
     private Integer totalQuantity;
     private String departmentName;
     private String procuredBy;
-    private LocalDateTime assignmentDate;
+    private LocalDate assignmentDate;
 
     public LicenseReportDTO() {}
 
     public LicenseReportDTO(String softwareName, String licenseKey, LocalDate purchaseDate,
                             LocalDate expiryDate, Integer totalQuantity, String departmentName,
-                            String procuredBy, LocalDateTime assignmentDate) {
+                            String procuredBy, LocalDate assignmentDate) {
         this.softwareName = softwareName;
         this.licenseKey = licenseKey;
         this.purchaseDate = purchaseDate;
@@ -85,11 +85,13 @@ public class LicenseReportDTO {
         this.procuredBy = procuredBy;
     }
 
-    public LocalDateTime getAssignmentDate() {
-        return assignmentDate;
-    }
+	public LocalDate getAssignmentDate() {
+		return assignmentDate;
+	}
 
-    public void setAssignmentDate(LocalDateTime assignmentDate) {
-        this.assignmentDate = assignmentDate;
-    }
+	public void setAssignmentDate(LocalDate assignmentDate) {
+		this.assignmentDate = assignmentDate;
+	}
+
+    
 }

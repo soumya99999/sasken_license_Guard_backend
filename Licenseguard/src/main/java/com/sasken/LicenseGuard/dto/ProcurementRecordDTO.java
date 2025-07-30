@@ -1,11 +1,12 @@
 package com.sasken.LicenseGuard.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class ProcurementRecordDTO {
     private Long poHeaderId;
     private String orderNumber;
-    private LocalDateTime creationDate;
+    private LocalDate creationDate;
     private String statusCode;
     private String supplier;
     private String softwareName;
@@ -21,10 +22,15 @@ public class ProcurementRecordDTO {
     public String getOrderNumber() { return orderNumber; }
     public void setOrderNumber(String orderNumber) { this.orderNumber = orderNumber; }
 
-    public LocalDateTime getCreationDate() { return creationDate; }
-    public void setCreationDate(LocalDateTime creationDate) { this.creationDate = creationDate; }
+    
 
-    public String getStatusCode() { return statusCode; }
+    public LocalDate getCreationDate() {
+		return creationDate;
+	}
+	public void setCreationDate(LocalDate creationDate) {
+		this.creationDate = creationDate;
+	}
+	public String getStatusCode() { return statusCode; }
     public void setStatusCode(String statusCode) { this.statusCode = statusCode; }
 
     public String getSupplier() { return supplier; }

@@ -2,6 +2,7 @@ package com.sasken.LicenseGuard.models;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,7 +24,7 @@ public class LicenseRequest {
     private User requestedBy;
 
     @Column(nullable = false)
-    private LocalDateTime requestedAt;
+    private LocalDate requestedAt;
 
     @Column(nullable = false)
     private String status; // PENDING, APPROVED, REJECTED
@@ -44,11 +45,15 @@ public class LicenseRequest {
 
     public User getRequestedBy() { return requestedBy; }
     public void setRequestedBy(User requestedBy) { this.requestedBy = requestedBy; }
-
-    public LocalDateTime getRequestedAt() { return requestedAt; }
-    public void setRequestedAt(LocalDateTime requestedAt) { this.requestedAt = requestedAt; }
-
-    public String getStatus() { return status; }
+    
+    
+    public LocalDate getRequestedAt() {
+		return requestedAt;
+	}
+	public void setRequestedAt(LocalDate requestedAt) {
+		this.requestedAt = requestedAt;
+	}
+	public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
     public String getReason() { return reason; }

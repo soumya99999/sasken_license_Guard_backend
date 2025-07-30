@@ -30,25 +30,32 @@ public class UserServiceImpl implements UserService {
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
 
-        // Role conversion
         Role role = Role.valueOf(dto.getRole());
         user.setRole(role);
 
-        // Approval Logic
         if (role == Role.DEPT_HEAD || role == Role.ADMIN) {
             user.setIsApproved(true);
         } else {
             user.setIsApproved(dto.getIsApproved() != null ? dto.getIsApproved() : false);
         }
 
-        // Department (optional)
+        // ✅ Assign department if provided
+        Department dept = null;
         if (dto.getDepartmentId() != null) {
-            Department dept = deptRepo.findById(dto.getDepartmentId())
+            dept = deptRepo.findById(dto.getDepartmentId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid department ID"));
             user.setDepartment(dept);
         }
 
-        return mapToDTO(userRepo.save(user));
+        User saved = userRepo.save(user);
+
+        // ✅ Set as headUser in Department only if DEPT_HEAD and department is assigned
+        if (role == Role.DEPT_HEAD && dept != null) {
+            dept.setHeadUser(saved);
+            deptRepo.save(dept);
+        }
+
+        return mapToDTO(saved);
     }
 
     @Override
@@ -58,8 +65,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUserById(Long id) {
-        return userRepo.findById(id)
-                .map(this::mapToDTO)
+        return userRepo.findById(id).map(this::mapToDTO)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
@@ -87,7 +93,7 @@ public class UserServiceImpl implements UserService {
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
         dto.setRole(user.getRole().name());
-        dto.setPassword(null); // security best practice
+        dto.setPassword(null);
         dto.setIsApproved(user.getIsApproved());
         dto.setDepartmentId(user.getDepartment() != null ? user.getDepartment().getId() : null);
         return dto;

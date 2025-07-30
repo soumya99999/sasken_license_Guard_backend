@@ -1,7 +1,8 @@
 package com.sasken.LicenseGuard.models;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "dept_license_request")
@@ -28,11 +29,22 @@ public class DeptLicenseRequest {
     private String reason;
 
     @Column(name = "requested_at", nullable = false)
-    private LocalDateTime requestedAt;
+    private LocalDate requestedAt;
+    
+    @ManyToOne
+    @JoinColumn(name = "requested_by_user_id", nullable = false)
+    private User requestedBy;
+
 
     // ===== Getters & Setters =====
 
-    public Long getId() { return id; }
+    public User getRequestedBy() {
+		return requestedBy;
+	}
+	public void setRequestedBy(User requestedBy) {
+		this.requestedBy = requestedBy;
+	}
+	public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     public Department getDepartment() { return department; }
@@ -49,7 +61,12 @@ public class DeptLicenseRequest {
 
     public String getReason() { return reason; }
     public void setReason(String reason) { this.reason = reason; }
-
-    public LocalDateTime getRequestedAt() { return requestedAt; }
-    public void setRequestedAt(LocalDateTime requestedAt) { this.requestedAt = requestedAt; }
+	public LocalDate getRequestedAt() {
+		return requestedAt;
+	}
+	public void setRequestedAt(LocalDate requestedAt) {
+		this.requestedAt = requestedAt;
+	}
+    
+    
 }

@@ -72,6 +72,15 @@ public class LicenseInventoryServiceImpl implements LicenseInventoryService {
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
+    
+    @Override
+    public List<LicenseInventoryDTO> getByProcurementRecordId(Long procurementId) {
+        return licenseRepo.findByProcurementRecord_PoHeaderId(procurementId)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
 
     private LicenseInventoryDTO mapToDTO(LicenseInventory entity) {
         LicenseInventoryDTO dto = new LicenseInventoryDTO();

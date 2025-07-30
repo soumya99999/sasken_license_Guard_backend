@@ -32,8 +32,15 @@ public class AuthController {
         res.setUsername(user.getUsername());
         res.setRole(user.getRole().name());
         res.setIsApproved(user.getIsApproved());
+        res.setEmail(user.getEmail());
         res.setDepartmentId(user.getDepartment() != null ? user.getDepartment().getId() : null);
+
+        // ✅ Set department name if user is DEPT_HEAD and department is assigned
+        if ("DEPT_HEAD".equals(user.getRole().name()) && user.getDepartment() != null) {
+            res.setDepartmentName(user.getDepartment().getName());
+        }
 
         return ResponseEntity.ok(res);
     }
+
 }

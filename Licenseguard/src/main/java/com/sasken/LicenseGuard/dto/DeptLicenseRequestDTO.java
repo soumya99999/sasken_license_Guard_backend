@@ -1,5 +1,6 @@
 package com.sasken.LicenseGuard.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class DeptLicenseRequestDTO {
@@ -9,11 +10,13 @@ public class DeptLicenseRequestDTO {
     private int requestedQuantity;
     private String status;
     private String reason;
-    private LocalDateTime requestedAt;
+    private String email;
+    private LocalDate requestedAt;
 
     // ===== Getters & Setters =====
 
-    public Long getId() { return id; }
+    
+	public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     public Long getDepartmentId() { return departmentId; }
@@ -31,6 +34,17 @@ public class DeptLicenseRequestDTO {
     public String getReason() { return reason; }
     public void setReason(String reason) { this.reason = reason; }
 
-    public LocalDateTime getRequestedAt() { return requestedAt; }
-    public void setRequestedAt(LocalDateTime requestedAt) { this.requestedAt = requestedAt; }
+    
+	public LocalDate getRequestedAt() {
+		return requestedAt;
+	}
+	public void setRequestedAt(LocalDate requestedAt) {
+		this.requestedAt = requestedAt;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
 }

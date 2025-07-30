@@ -36,4 +36,10 @@ public class LicenseInventoryController {
     public ResponseEntity<List<LicenseInventoryDTO>> getByDepartment(@PathVariable Long deptId) {
         return ResponseEntity.ok(licenseService.getByDepartment(deptId));
     }
+    
+    @GetMapping("/procurement/{procurementId}")
+    public ResponseEntity<List<LicenseInventoryDTO>> getByProcurement(@PathVariable Long procurementId) {
+        return ResponseEntity.ok(licenseService.getByProcurementRecordId(procurementId));
+    }
+
 }

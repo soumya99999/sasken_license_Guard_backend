@@ -1,7 +1,8 @@
 package com.sasken.LicenseGuard.models;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "department_join_request")
@@ -23,7 +24,7 @@ public class DepartmentJoinRequest {
     private String status; // PENDING, APPROVED, REJECTED
 
     @Column(name = "requested_at", nullable = false)
-    private LocalDateTime requestedAt;
+    private LocalDate requestedAt;
 
     // === Custom Getters & Setters ===
 
@@ -38,7 +39,12 @@ public class DepartmentJoinRequest {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
-
-    public LocalDateTime getRequestedAt() { return requestedAt; }
-    public void setRequestedAt(LocalDateTime requestedAt) { this.requestedAt = requestedAt; }
+	public LocalDate getRequestedAt() {
+		return requestedAt;
+	}
+	public void setRequestedAt(LocalDate requestedAt) {
+		this.requestedAt = requestedAt;
+	}
+    
+    
 }

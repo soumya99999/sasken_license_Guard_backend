@@ -22,14 +22,22 @@ public class DepartmentController {
         return ResponseEntity.ok(departmentService.createDepartment(dto));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<DepartmentDTO> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(departmentService.getDepartmentById(id));
+    @PutMapping("/{id}")
+    public ResponseEntity<DepartmentDTO> updateDepartment(
+            @PathVariable Long id,
+            @RequestBody DepartmentDTO dto
+    ) {
+        return ResponseEntity.ok(departmentService.updateDepartment(id, dto));
     }
 
     @GetMapping
     public ResponseEntity<List<DepartmentDTO>> getAll() {
         return ResponseEntity.ok(departmentService.getAllDepartments());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DepartmentDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(departmentService.getDepartmentById(id));
     }
 
     @DeleteMapping("/{id}")

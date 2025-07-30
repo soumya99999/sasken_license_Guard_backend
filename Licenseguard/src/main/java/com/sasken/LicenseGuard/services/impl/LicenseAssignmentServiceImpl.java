@@ -10,6 +10,7 @@ import com.sasken.LicenseGuard.repository.UserRepository;
 import com.sasken.LicenseGuard.services.LicenseAssignmentService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,7 +62,7 @@ public class LicenseAssignmentServiceImpl implements LicenseAssignmentService {
 
         LicenseAssignment assignment = new LicenseAssignment();
         assignment.setAssignedQuantity(dto.getAssignedQuantity());
-        assignment.setAssignedAt(LocalDateTime.now());
+        assignment.setAssignedAt(LocalDate.now());
         assignment.setExpiresAt(dto.getExpiresAt());
         assignment.setLicenseInventory(license);
         assignment.setAssignedTo(toUser);

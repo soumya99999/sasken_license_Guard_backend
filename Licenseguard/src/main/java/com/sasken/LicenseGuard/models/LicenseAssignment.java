@@ -1,6 +1,8 @@
 package com.sasken.LicenseGuard.models;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,10 +17,10 @@ public class LicenseAssignment {
     private int assignedQuantity;
 
     @Column(nullable = false)
-    private LocalDateTime assignedAt;
+    private LocalDate assignedAt;
 
     @Column(nullable = false)
-    private LocalDateTime expiresAt;
+    private LocalDate expiresAt;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "license_inventory_id")
@@ -38,14 +40,22 @@ public class LicenseAssignment {
 
     public int getAssignedQuantity() { return assignedQuantity; }
     public void setAssignedQuantity(int assignedQuantity) { this.assignedQuantity = assignedQuantity; }
+    
+    
 
-    public LocalDateTime getAssignedAt() { return assignedAt; }
-    public void setAssignedAt(LocalDateTime assignedAt) { this.assignedAt = assignedAt; }
-
-    public LocalDateTime getExpiresAt() { return expiresAt; }
-    public void setExpiresAt(LocalDateTime expiresAt) { this.expiresAt = expiresAt; }
-
-    public LicenseInventory getLicenseInventory() { return licenseInventory; }
+    public LocalDate getAssignedAt() {
+		return assignedAt;
+	}
+	public void setAssignedAt(LocalDate assignedAt) {
+		this.assignedAt = assignedAt;
+	}
+	public LocalDate getExpiresAt() {
+		return expiresAt;
+	}
+	public void setExpiresAt(LocalDate expiresAt) {
+		this.expiresAt = expiresAt;
+	}
+	public LicenseInventory getLicenseInventory() { return licenseInventory; }
     public void setLicenseInventory(LicenseInventory licenseInventory) { this.licenseInventory = licenseInventory; }
 
     public User getAssignedTo() { return assignedTo; }

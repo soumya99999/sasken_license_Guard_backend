@@ -9,4 +9,5 @@ public interface LicenseInventoryService {
     LicenseInventoryDTO getLicenseById(Long id);
     List<LicenseInventoryDTO> getAllLicenses();
     List<LicenseInventoryDTO> getByDepartment(Long departmentId);
+    List<LicenseInventoryDTO> getByProcurementRecordId(Long procurementId);
 }

@@ -15,7 +15,7 @@ public class Department {
     private String name;
 
     @OneToOne
-    @JoinColumn(name = "head_user_id", nullable = false)
+    @JoinColumn(name = "head_user_id", nullable = true)
     private User headUser;
 
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
