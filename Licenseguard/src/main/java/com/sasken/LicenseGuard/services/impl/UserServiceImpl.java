@@ -33,12 +33,6 @@ public class UserServiceImpl implements UserService {
         Role role = Role.valueOf(dto.getRole());
         user.setRole(role);
 
-        if (role == Role.DEPT_HEAD || role == Role.ADMIN) {
-            user.setIsApproved(true);
-        } else {
-            user.setIsApproved(dto.getIsApproved() != null ? dto.getIsApproved() : false);
-        }
-
         // ✅ Assign department if provided
         Department dept = null;
         if (dto.getDepartmentId() != null) {
@@ -76,13 +70,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO approveUser(Long id) {
-        User user = userRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        user.setIsApproved(true);
-        return mapToDTO(userRepo.save(user));
-    }
-
-    @Override
     public void deleteUser(Long id) {
         userRepo.deleteById(id);
     }
@@ -94,7 +81,6 @@ public class UserServiceImpl implements UserService {
         dto.setEmail(user.getEmail());
         dto.setRole(user.getRole().name());
         dto.setPassword(null);
-        dto.setIsApproved(user.getIsApproved());
         dto.setDepartmentId(user.getDepartment() != null ? user.getDepartment().getId() : null);
         return dto;
     }

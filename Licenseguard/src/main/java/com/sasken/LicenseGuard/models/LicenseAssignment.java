@@ -17,22 +17,16 @@ public class LicenseAssignment {
     private int assignedQuantity;
 
     @Column(nullable = false)
-    private LocalDate assignedAt;
-
-    @Column(nullable = false)
     private LocalDate expiresAt;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "license_inventory_id")
     private LicenseInventory licenseInventory;
-
+    
     @ManyToOne(optional = false)
-    @JoinColumn(name = "assigned_to_id")
-    private User assignedTo;
+    @JoinColumn(name = "department_id")
+    private Department department;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "assigned_by_id")
-    private User assignedBy; // Admin or Dept Head
 
     // ===== Custom Getters & Setters =====
     public Long getId() { return id; }
@@ -41,14 +35,6 @@ public class LicenseAssignment {
     public int getAssignedQuantity() { return assignedQuantity; }
     public void setAssignedQuantity(int assignedQuantity) { this.assignedQuantity = assignedQuantity; }
     
-    
-
-    public LocalDate getAssignedAt() {
-		return assignedAt;
-	}
-	public void setAssignedAt(LocalDate assignedAt) {
-		this.assignedAt = assignedAt;
-	}
 	public LocalDate getExpiresAt() {
 		return expiresAt;
 	}
@@ -57,10 +43,12 @@ public class LicenseAssignment {
 	}
 	public LicenseInventory getLicenseInventory() { return licenseInventory; }
     public void setLicenseInventory(LicenseInventory licenseInventory) { this.licenseInventory = licenseInventory; }
-
-    public User getAssignedTo() { return assignedTo; }
-    public void setAssignedTo(User assignedTo) { this.assignedTo = assignedTo; }
-
-    public User getAssignedBy() { return assignedBy; }
-    public void setAssignedBy(User assignedBy) { this.assignedBy = assignedBy; }
+	public Department getDepartment() {
+		return department;
+	}
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
+    
+    
 }

@@ -1,5 +1,6 @@
 package com.sasken.LicenseGuard.controllers;
 
+import com.sasken.LicenseGuard.dto.AdminLicenseAssignmentDTO;
 import com.sasken.LicenseGuard.dto.LicenseAssignmentDTO;
 import com.sasken.LicenseGuard.services.LicenseAssignmentService;
 import org.springframework.http.ResponseEntity;
@@ -11,29 +12,28 @@ import java.util.List;
 @RequestMapping("/api/license-assignments")
 public class LicenseAssignmentController {
 
-    private final LicenseAssignmentService service;
+    private final LicenseAssignmentService assignmentService;
 
-    public LicenseAssignmentController(LicenseAssignmentService service) {
-        this.service = service;
+    public LicenseAssignmentController(LicenseAssignmentService assignmentService) {
+        this.assignmentService = assignmentService;
     }
 
-    @PostMapping("/admin-issue")
-    public ResponseEntity<LicenseAssignmentDTO> adminAssignToDept(@RequestBody LicenseAssignmentDTO dto) {
-        return ResponseEntity.ok(service.issueLicenseToDeptHead(dto));
+    // ✅ Assign license to department (Admin)
+    @PostMapping
+    public ResponseEntity<String> assignLicense(@RequestBody AdminLicenseAssignmentDTO dto) {
+        assignmentService.assignLicense(dto);
+        return ResponseEntity.ok("License assigned successfully.");
     }
 
-    @PostMapping("/head-assign")
-    public ResponseEntity<LicenseAssignmentDTO> deptHeadAssignToUser(@RequestBody LicenseAssignmentDTO dto) {
-        return ResponseEntity.ok(service.assignLicenseToUser(dto));
-    }
-
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<LicenseAssignmentDTO>> getAssignmentsForUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(service.getAssignmentsByUser(userId));
-    }
-
+    // ✅ Get all assignments
     @GetMapping
     public ResponseEntity<List<LicenseAssignmentDTO>> getAllAssignments() {
-        return ResponseEntity.ok(service.getAllAssignments());
+        return ResponseEntity.ok(assignmentService.getAllAssignments());
+    }
+
+    // ✅ Get assignments by department
+    @GetMapping("/department/{deptId}")
+    public ResponseEntity<List<LicenseAssignmentDTO>> getByDepartment(@PathVariable Long deptId) {
+        return ResponseEntity.ok(assignmentService.getAssignmentsByDepartment(deptId));
     }
 }

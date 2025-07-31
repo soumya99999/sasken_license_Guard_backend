@@ -25,9 +25,6 @@ public class DeptLicenseRequest {
     @Column(nullable = false)
     private String status; // PENDING, APPROVED, REJECTED
 
-    @Column
-    private String reason;
-
     @Column(name = "requested_at", nullable = false)
     private LocalDate requestedAt;
     
@@ -59,8 +56,6 @@ public class DeptLicenseRequest {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public String getReason() { return reason; }
-    public void setReason(String reason) { this.reason = reason; }
 	public LocalDate getRequestedAt() {
 		return requestedAt;
 	}

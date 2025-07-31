@@ -26,10 +26,6 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @Convert(converter = BooleanToStringConverter.class)
-    @Column(nullable = false)
-    private Boolean isApproved;
-
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
@@ -50,9 +46,6 @@ public class User {
 
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
-
-    public Boolean getIsApproved() { return isApproved; }
-    public void setIsApproved(Boolean isApproved) { this.isApproved = isApproved; }
 
     public Department getDepartment() { return department; }
     public void setDepartment(Department department) { this.department = department; }

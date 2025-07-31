@@ -1,17 +1,12 @@
 package com.sasken.LicenseGuard.services.impl;
 
+import com.sasken.LicenseGuard.dto.AdminLicenseAssignmentDTO;
 import com.sasken.LicenseGuard.dto.LicenseAssignmentDTO;
-import com.sasken.LicenseGuard.models.LicenseAssignment;
-import com.sasken.LicenseGuard.models.LicenseInventory;
-import com.sasken.LicenseGuard.models.User;
-import com.sasken.LicenseGuard.repository.LicenseAssignmentRepository;
-import com.sasken.LicenseGuard.repository.LicenseInventoryRepository;
-import com.sasken.LicenseGuard.repository.UserRepository;
+import com.sasken.LicenseGuard.models.*;
+import com.sasken.LicenseGuard.repository.*;
 import com.sasken.LicenseGuard.services.LicenseAssignmentService;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,63 +15,52 @@ public class LicenseAssignmentServiceImpl implements LicenseAssignmentService {
 
     private final LicenseAssignmentRepository assignmentRepo;
     private final LicenseInventoryRepository licenseRepo;
-    private final UserRepository userRepo;
+    private final DepartmentRepository deptRepo;
+    private final DeptLicenseRequestRepository requestRepo;
 
     public LicenseAssignmentServiceImpl(
             LicenseAssignmentRepository assignmentRepo,
             LicenseInventoryRepository licenseRepo,
-            UserRepository userRepo) {
+            DepartmentRepository deptRepo,
+            DeptLicenseRequestRepository requestRepo) {
         this.assignmentRepo = assignmentRepo;
         this.licenseRepo = licenseRepo;
-        this.userRepo = userRepo;
+        this.deptRepo = deptRepo;
+        this.requestRepo = requestRepo;
     }
 
     @Override
-    public LicenseAssignmentDTO issueLicenseToDeptHead(LicenseAssignmentDTO dto) {
-        return assign(dto, true); // reduce quantity
-    }
+    public void assignLicense(AdminLicenseAssignmentDTO dto) {
+        LicenseInventory inventory = licenseRepo.findById(dto.getLicenseInventoryId())
+                .orElseThrow(() -> new IllegalArgumentException("LicenseInventory not found"));
 
-    @Override
-    public LicenseAssignmentDTO assignLicenseToUser(LicenseAssignmentDTO dto) {
-        return assign(dto, false); // don't reduce quantity
-    }
+        Department department = deptRepo.findById(dto.getDepartmentId())
+                .orElseThrow(() -> new IllegalArgumentException("Department not found"));
 
-    private LicenseAssignmentDTO assign(LicenseAssignmentDTO dto, boolean reduceInventory) {
-        LicenseInventory license = licenseRepo.findById(dto.getLicenseInventoryId())
-                .orElseThrow(() -> new IllegalArgumentException("License not found"));
-
-        User toUser = userRepo.findById(dto.getAssignedToUserId())
-                .orElseThrow(() -> new IllegalArgumentException("Assigned-to User not found"));
-
-        User byUser = userRepo.findById(dto.getAssignedByUserId())
-                .orElseThrow(() -> new IllegalArgumentException("Assigned-by User not found"));
-
-        // Check and reduce if it's an admin issuing
-        if (reduceInventory) {
-            if (license.getAvailableQuantity() < dto.getAssignedQuantity()) {
-                throw new IllegalStateException("Not enough available licenses.");
-            }
-            license.setAvailableQuantity(license.getAvailableQuantity() - dto.getAssignedQuantity());
-            licenseRepo.save(license);
+        if (inventory.getAvailableQuantity() < dto.getAssignedQuantity()) {
+            throw new IllegalArgumentException("Insufficient license quantity available");
         }
 
+        // Subtract from inventory
+        inventory.setAvailableQuantity(inventory.getAvailableQuantity() - dto.getAssignedQuantity());
+        licenseRepo.save(inventory);
+
+        // Save assignment
         LicenseAssignment assignment = new LicenseAssignment();
         assignment.setAssignedQuantity(dto.getAssignedQuantity());
-        assignment.setAssignedAt(LocalDate.now());
         assignment.setExpiresAt(dto.getExpiresAt());
-        assignment.setLicenseInventory(license);
-        assignment.setAssignedTo(toUser);
-        assignment.setAssignedBy(byUser);
+        assignment.setLicenseInventory(inventory);
+        assignment.setDepartment(department);
 
-        return mapToDTO(assignmentRepo.save(assignment));
-    }
+        assignmentRepo.save(assignment);
 
-    @Override
-    public List<LicenseAssignmentDTO> getAssignmentsByUser(Long userId) {
-        return assignmentRepo.findByAssignedToId(userId)
-                .stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+        // Update dept license request if present
+        if (dto.getDeptLicenseRequestId() != null) {
+            DeptLicenseRequest request = requestRepo.findById(dto.getDeptLicenseRequestId())
+                    .orElseThrow(() -> new IllegalArgumentException("DeptLicenseRequest not found"));
+            request.setStatus("APPROVED");
+            requestRepo.save(request);
+        }
     }
 
     @Override
@@ -86,15 +70,21 @@ public class LicenseAssignmentServiceImpl implements LicenseAssignmentService {
                 .collect(Collectors.toList());
     }
 
-    private LicenseAssignmentDTO mapToDTO(LicenseAssignment a) {
+    @Override
+    public List<LicenseAssignmentDTO> getAssignmentsByDepartment(Long deptId) {
+        return assignmentRepo.findByDepartmentId(deptId).stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private LicenseAssignmentDTO mapToDTO(LicenseAssignment entity) {
         LicenseAssignmentDTO dto = new LicenseAssignmentDTO();
-        dto.setId(a.getId());
-        dto.setAssignedQuantity(a.getAssignedQuantity());
-        dto.setAssignedAt(a.getAssignedAt());
-        dto.setExpiresAt(a.getExpiresAt());
-        dto.setLicenseInventoryId(a.getLicenseInventory().getId());
-        dto.setAssignedToUserId(a.getAssignedTo().getId());
-        dto.setAssignedByUserId(a.getAssignedBy().getId());
+        dto.setId(entity.getId());
+        dto.setAssignedQuantity(entity.getAssignedQuantity());
+        dto.setExpiresAt(entity.getExpiresAt());
+        dto.setLicenseInventoryId(entity.getLicenseInventory().getId());
+        dto.setDepartmentId(entity.getDepartment().getId());
+        dto.setSoftwareName(entity.getLicenseInventory().getSoftwareName());
         return dto;
     }
 }

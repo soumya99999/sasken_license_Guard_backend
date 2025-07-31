@@ -37,36 +37,20 @@ public class DeptLicenseRequestServiceImpl implements DeptLicenseRequestService 
         Department dept = deptRepo.findById(dto.getDepartmentId())
                 .orElseThrow(() -> new IllegalArgumentException("Department not found"));
 
-        User user = userRepo.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + dto.getEmail()));
+        User user = userRepo.findById(dto.getRequestedByUserId())
+                .orElseThrow(() -> new IllegalArgumentException("RequestedBy user not found"));
 
         DeptLicenseRequest request = new DeptLicenseRequest();
         request.setDepartment(dept);
-        request.setRequestedBy(user);
         request.setSoftwareName(dto.getSoftwareName());
         request.setRequestedQuantity(dto.getRequestedQuantity());
         request.setStatus("PENDING");
         request.setRequestedAt(LocalDate.now());
+        request.setRequestedBy(user);
 
         return mapToDTO(repo.save(request));
     }
 
-    @Override
-    public DeptLicenseRequestDTO approveRequest(Long requestId) {
-        DeptLicenseRequest req = repo.findById(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
-        req.setStatus("APPROVED");
-        return mapToDTO(repo.save(req));
-    }
-
-    @Override
-    public DeptLicenseRequestDTO rejectRequest(Long requestId, String reason) {
-        DeptLicenseRequest req = repo.findById(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
-        req.setStatus("REJECTED");
-        req.setReason(reason);
-        return mapToDTO(repo.save(req));
-    }
 
     @Override
     public List<DeptLicenseRequestDTO> getAllRequests() {
@@ -90,12 +74,8 @@ public class DeptLicenseRequestServiceImpl implements DeptLicenseRequestService 
         dto.setRequestedQuantity(req.getRequestedQuantity());
         dto.setRequestedAt(req.getRequestedAt());
         dto.setStatus(req.getStatus());
-        dto.setReason(req.getReason());
-
-        if (req.getRequestedBy() != null) {
-            dto.setEmail(req.getRequestedBy().getEmail());
-        }
-
+        dto.setRequestedByUserId(req.getRequestedBy().getId());
+        dto.setRequestedByEmail(req.getRequestedBy().getEmail());
         return dto;
     }
 }

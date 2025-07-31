@@ -8,6 +8,5 @@ public interface UserService {
     List<UserDTO> getAllUsers();
     UserDTO getUserById(Long id);
     List<UserDTO> getUsersByDepartment(Long deptId);
-    UserDTO approveUser(Long id);
     void deleteUser(Long id);
 }

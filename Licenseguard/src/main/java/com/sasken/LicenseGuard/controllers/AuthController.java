@@ -31,7 +31,6 @@ public class AuthController {
         res.setUserId(user.getId());
         res.setUsername(user.getUsername());
         res.setRole(user.getRole().name());
-        res.setIsApproved(user.getIsApproved());
         res.setEmail(user.getEmail());
         res.setDepartmentId(user.getDepartment() != null ? user.getDepartment().getId() : null);
 

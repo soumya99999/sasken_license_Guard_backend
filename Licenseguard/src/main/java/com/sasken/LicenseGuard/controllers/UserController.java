@@ -39,11 +39,6 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @PutMapping("/{id}/approve")
-    public ResponseEntity<UserDTO> approve(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.approveUser(id));
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         userService.deleteUser(id);

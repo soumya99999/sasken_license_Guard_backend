@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface LicenseAssignmentRepository extends JpaRepository<LicenseAssignment, Long> {
-    List<LicenseAssignment> findByAssignedToId(Long userId);
+    List<LicenseAssignment> findByDepartmentId(Long departmentId);
 }

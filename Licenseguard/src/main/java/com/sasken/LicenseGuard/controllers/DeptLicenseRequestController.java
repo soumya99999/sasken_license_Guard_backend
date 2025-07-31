@@ -22,16 +22,6 @@ public class DeptLicenseRequestController {
         return ResponseEntity.ok(service.createRequest(dto));
     }
 
-    @PutMapping("/{id}/approve")
-    public ResponseEntity<DeptLicenseRequestDTO> approve(@PathVariable Long id) {
-        return ResponseEntity.ok(service.approveRequest(id));
-    }
-
-    @PutMapping("/{id}/reject")
-    public ResponseEntity<DeptLicenseRequestDTO> reject(@PathVariable Long id, @RequestBody String reason) {
-        return ResponseEntity.ok(service.rejectRequest(id, reason));
-    }
-
     @GetMapping
     public ResponseEntity<List<DeptLicenseRequestDTO>> getAll() {
         return ResponseEntity.ok(service.getAllRequests());
