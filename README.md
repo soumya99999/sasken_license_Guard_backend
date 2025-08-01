@@ -1,4 +1,4 @@
-# 📦 License Inventory Management Module - LicenseGuard
+#  License Inventory Management Module - LicenseGuard
 
 ## 📘 Overview
 
